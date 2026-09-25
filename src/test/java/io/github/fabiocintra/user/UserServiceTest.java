@@ -57,11 +57,11 @@ public class UserServiceTest {
     void naoDeveSalvarUsuarioQuandoCPFJaEstiverCadastrado(){
 
         Mockito
-                .when(repository.existByCpf("***.456.789-**"))
+                .when(repository.existsByCpf("***.456.789-**"))
                 .thenReturn(true);
 
         assertThrows(DataExistsInTheSystemException.class, () -> service.createUser(user));
-        Mockito.verify(repository).existByCpf("***.456.789-**");
+        Mockito.verify(repository).existsByCpf("***.456.789-**");
         Mockito.verify(repository, Mockito.never()).save(Mockito.any());
 
     }
@@ -70,11 +70,11 @@ public class UserServiceTest {
     void naoDeveSalvarUsuarioQuandoUsernameJaEstiverCadastrado(){
 
         Mockito
-                .when(repository.existByUsername("Henrique@admin.com"))
+                .when(repository.existsByUsername("Henrique@admin.com"))
                 .thenReturn(true);
 
         assertThrows(DataExistsInTheSystemException.class, () -> service.createUser(user));
-        Mockito.verify(repository).existByUsername("Henrique@admin.com");
+        Mockito.verify(repository).existsByUsername("Henrique@admin.com");
         Mockito.verify(repository, Mockito.never()).save(Mockito.any());
 
     }

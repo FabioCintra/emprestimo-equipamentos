@@ -16,11 +16,11 @@ public class UserService {
         String cpf = user.getCpf();
         String username = user.getUsername();
 
-        if (repository.existByCpf(cpf)){
+        if (repository.existsByCpf(cpf)){
             throw new DataExistsInTheSystemException("CPF already registered!");
         }
 
-        if (repository.existByUsername(username)){
+        if (repository.existsByUsername(username)){
             throw new DataExistsInTheSystemException("Username already registered!");
         }
 

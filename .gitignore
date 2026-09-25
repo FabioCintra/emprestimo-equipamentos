@@ -35,4 +35,4 @@ build/
 ### DEVELOPMENT ###
 .env
 sql-commands.txt
-app.log
+app.log*

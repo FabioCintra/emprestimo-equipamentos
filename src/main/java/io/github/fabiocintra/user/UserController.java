@@ -1,9 +1,12 @@
 package io.github.fabiocintra.user;
 
 import io.github.fabiocintra.user.dto.UserRequest;
+import io.github.fabiocintra.user.dto.UserResponse;
+import io.github.fabiocintra.user.dto.UserUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,9 +19,17 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@Valid @RequestBody UserRequest request){
+    public UserResponse createUser(@RequestBody @Valid UserRequest request){
         UserModel user = mapper.toEntity(request);
-        service.createUser(user);
+        UserModel userPersisted = service.createUser(user);
+        UserResponse userResponse = mapper.toResponse(userPersisted);
+        return userResponse;
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void updateUser(@Valid @RequestBody UserUpdateRequest request){
+
     }
 
 }
