@@ -37,7 +37,7 @@ public class UserService {
 
     }
 
-    public void updateUser(UserUpdateRequest request){
+    public UserModel updateUser(UserUpdateRequest request){
 
         UUID id = UUID.fromString(request.id());
         String password = request.password();
@@ -65,7 +65,7 @@ public class UserService {
             userUpdated.setName(name);
         }
 
-        repository.save(userUpdated);
+        return repository.save(userUpdated);
     }
 
     public List<UserModel> findAll(){

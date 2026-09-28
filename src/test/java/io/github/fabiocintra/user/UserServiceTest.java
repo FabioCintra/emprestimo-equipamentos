@@ -2,9 +2,11 @@ package io.github.fabiocintra.user;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.github.fabiocintra.user.dto.UserUpdateRequest;
 import io.github.fabiocintra.utils.Utils;
 import io.github.fabiocintra.utils.exceptions.DataExistsInTheSystemException;
 import io.github.fabiocintra.utils.exceptions.ThisIsNotACPFException;
+import io.github.fabiocintra.utils.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -27,16 +32,16 @@ public class UserServiceTest {
     @BeforeEach
     void setUp(){
         user = new UserModel();
-        user.setUsername("Henrique@admin.com");
-        user.setPassword("admin123");
-        user.setName("Henrique");
+        user.setUsername("henrique@gmail.com");
+        user.setPassword("96028196fa");
+        user.setName("Fabio Henrique Silva Cintra");
         user.setCpf("12345678900");
 
         userResult = new UserModel();
-        userResult.setUsername("Henrique@admin.com");
-        userResult.setPassword("admin123");
-        userResult.setName("Henrique");
-        userResult.setCpf("***.456.789-**");
+        userResult.setUsername("henrique@gmail.com");
+        userResult.setPassword("96028196fa");
+        userResult.setName("Fabio Henrique Silva Cintra");
+        userResult.setCpf("12345678900");
     }
 
     @Test
@@ -57,11 +62,11 @@ public class UserServiceTest {
     void naoDeveSalvarUsuarioQuandoCPFJaEstiverCadastrado(){
 
         Mockito
-                .when(repository.existsByCpf("***.456.789-**"))
+                .when(repository.existsByCpf("12345678900"))
                 .thenReturn(true);
 
         assertThrows(DataExistsInTheSystemException.class, () -> service.createUser(user));
-        Mockito.verify(repository).existsByCpf("***.456.789-**");
+        Mockito.verify(repository).existsByCpf("12345678900");
         Mockito.verify(repository, Mockito.never()).save(Mockito.any());
 
     }
@@ -70,22 +75,87 @@ public class UserServiceTest {
     void naoDeveSalvarUsuarioQuandoUsernameJaEstiverCadastrado(){
 
         Mockito
-                .when(repository.existsByUsername("Henrique@admin.com"))
+                .when(repository.existsByUsername("henrique@gmail.com"))
                 .thenReturn(true);
 
         assertThrows(DataExistsInTheSystemException.class, () -> service.createUser(user));
-        Mockito.verify(repository).existsByUsername("Henrique@admin.com");
+        Mockito.verify(repository).existsByUsername("henrique@gmail.com");
         Mockito.verify(repository, Mockito.never()).save(Mockito.any());
 
     }
 
     @Test
-    void naoDeveSalvarUsuarioQuandoOCPFParaSerMascaradoForInvalido() {
+    void deveAtualizarUsuario(){
 
-        user.setCpf("1223");
+        UserUpdateRequest userRequest = new UserUpdateRequest(
+                "ea7ab246-3340-4bb1-b3aa-01a75300802e",
+                null,
+                null,
+                null
+        );
 
-        assertThrows(ThisIsNotACPFException.class, () -> service.createUser(user));
+        UUID id = UUID.fromString("ea7ab246-3340-4bb1-b3aa-01a75300802e");
+
+        user.setId(id);
+        userResult.setId(id);
+
+        Mockito
+                .when(repository.findById(id))
+                .thenReturn(Optional.ofNullable(user));
+
+        Mockito
+                .when(repository.save(user))
+                .thenReturn(userResult);
+
+        var userUpdated = service.updateUser(userRequest);
+
+        assertNotNull(userUpdated);
+        Mockito.verify(repository).save(user);
+
+    }
+
+    @Test
+    void naoDeveAtualizarUsuarioQuandoIdForIncorreto(){
+        UUID id = UUID.randomUUID();
+        UserUpdateRequest userRequest = new UserUpdateRequest(
+                id.toString(),
+                null,
+                null,
+                null
+        );
+
+        Mockito
+                .when(repository.findById(id))
+                .thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> service.updateUser(userRequest));
         Mockito.verify(repository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(repository).findById(id);
+    }
 
+    @Test
+    void naoDeveAtualizarUsuarioQuandoUsernameJaEstiverCadastrado(){
+        UserUpdateRequest userRequest = new UserUpdateRequest(
+                "ea7ab246-3340-4bb1-b3aa-01a75300802e",
+                "henrique@gmail.com",
+                null,
+                null
+        );
+
+        UUID id = UUID.fromString("ea7ab246-3340-4bb1-b3aa-01a75300802e");
+        user.setId(id);
+
+        Mockito
+                .when(repository.findById(id))
+                .thenReturn(Optional.ofNullable(user));
+
+        Mockito
+                .when(repository.existsByUsername("henrique@gmail.com"))
+                .thenReturn(true);
+
+        assertThrows(DataExistsInTheSystemException.class, () -> service.updateUser(userRequest));
+        Mockito.verify(repository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(repository).findById(id);
+        Mockito.verify(repository).existsByUsername("henrique@gmail.com");
     }
 }
