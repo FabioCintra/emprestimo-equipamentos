@@ -3,10 +3,8 @@ package io.github.fabiocintra.user;
 import static org.junit.jupiter.api.Assertions.*;
 
 import io.github.fabiocintra.user.dto.UserUpdateRequest;
-import io.github.fabiocintra.utils.Utils;
 import io.github.fabiocintra.utils.exceptions.DataExistsInTheSystemException;
-import io.github.fabiocintra.utils.exceptions.ThisIsNotACPFException;
-import io.github.fabiocintra.utils.exceptions.UserNotFoundException;
+import io.github.fabiocintra.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -128,7 +126,7 @@ public class UserServiceTest {
                 .when(repository.findById(id))
                 .thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> service.updateUser(userRequest));
+        assertThrows(NotFoundException.class, () -> service.updateUser(userRequest));
         Mockito.verify(repository, Mockito.never()).save(Mockito.any());
         Mockito.verify(repository).findById(id);
     }

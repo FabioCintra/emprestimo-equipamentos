@@ -2,10 +2,9 @@ package io.github.fabiocintra.user;
 
 import static io.github.fabiocintra.utils.Utils.*;
 
-import io.github.fabiocintra.user.dto.UserResponse;
 import io.github.fabiocintra.user.dto.UserUpdateRequest;
 import io.github.fabiocintra.utils.exceptions.DataExistsInTheSystemException;
-import io.github.fabiocintra.utils.exceptions.UserNotFoundException;
+import io.github.fabiocintra.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +46,7 @@ public class UserService {
         UserModel userUpdated =  repository.findById(id).orElse(null);
 
         if (userUpdated == null){
-            throw new UserNotFoundException("User not found! Verify the ID!");
+            throw new NotFoundException("User not found! Verify the ID!");
         }
 
         if (username != null) {

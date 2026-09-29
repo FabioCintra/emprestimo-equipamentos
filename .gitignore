@@ -36,3 +36,5 @@ build/
 .env
 sql-commands.txt
 app.log*
+.postman
+postman
