@@ -1,15 +1,17 @@
 package io.github.fabiocintra.equipment;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.github.fabiocintra.loan.LoanModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "equipment_tb")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class EquipmentModel {
@@ -17,25 +19,31 @@ public class EquipmentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
-    UUID id;
+    private UUID id;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
     @Column(name = "total_quantity")
-    int totalQuantity;
+    private Integer totalQuantity;
 
     @Column(name = "borrowed_quantity")
-    int borrowedQuantity;
+    private Integer borrowedQuantity;
 
     @Column(name = "avaliable_quantity")
-    int avaliableQuantity;
+    private Integer avaliableQuantity;
 
-    public EquipmentModel (String name, int totalQuantity) {
+    @OneToMany(
+            mappedBy = "equipment"
+    )
+    @JsonManagedReference
+    private List<LoanModel> loans;
+
+    public EquipmentModel (String name, Integer totalQuantity) {
         this.name = name;
         this.totalQuantity = totalQuantity;
         this.borrowedQuantity = 0;
-        this.avaliableQuantity = 0;
+        this.avaliableQuantity = totalQuantity;
     }
 
 }

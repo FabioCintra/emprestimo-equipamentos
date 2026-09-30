@@ -17,7 +17,6 @@ public class EquipmentService {
     private final EquipmentRepository repository;
 
     public void createEquipment(EquipmentModel model){
-        model.setAvaliableQuantity(model.getTotalQuantity());
         repository.save(model);
     }
 
@@ -38,9 +37,8 @@ public class EquipmentService {
         }
         if(newTotalQuantity != null){
             equipmentPersisted.setTotalQuantity(newTotalQuantity);
+            equipmentPersisted.setAvaliableQuantity(newTotalQuantity);
         }
-
-        equipmentPersisted.setAvaliableQuantity(newTotalQuantity);
 
         repository.save(equipmentPersisted);
 

@@ -1,17 +1,19 @@
 package io.github.fabiocintra.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.github.fabiocintra.loan.LoanModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "user_tb")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class UserModel {
 
     @Id
@@ -30,6 +32,12 @@ public class UserModel {
 
     @Column(name = "cpf")
     private String cpf;
+
+    @OneToMany(
+            mappedBy = "user"
+    )
+    @JsonManagedReference
+    private List<LoanModel> loans;
 
     public UserModel(String username, String password, String name, String cpf) {
         this.username = username;
