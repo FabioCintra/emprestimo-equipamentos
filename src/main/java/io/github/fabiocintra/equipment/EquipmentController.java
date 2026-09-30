@@ -1,6 +1,7 @@
 package io.github.fabiocintra.equipment;
 
 import io.github.fabiocintra.equipment.dto.EquipmentRequest;
+import io.github.fabiocintra.equipment.dto.EquipmentResponse;
 import io.github.fabiocintra.equipment.dto.EquipmentUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,10 @@ public class EquipmentController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EquipmentModel> getEquipments(@RequestParam(name = "name", required = false) String name){
-        return service.getAllEquipments(name);
+    public List<EquipmentResponse> getEquipments(@RequestParam(name = "name", required = false) String name){
+        return service.getAllEquipments(name).stream()
+                .map(e -> mapper.toResponse(e))
+                .toList();
     }
 
 }

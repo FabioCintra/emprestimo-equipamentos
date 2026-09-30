@@ -42,4 +42,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(value = {LoanException.class})
+    public ResponseEntity<String> handleLoanException(LoanException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }

@@ -46,4 +46,9 @@ public class LoanModel {
     @JsonBackReference
     private EquipmentModel equipment;
 
+    public LoanModel(UserModel user, EquipmentModel equipment){
+        this.user = user;
+        this.equipment = equipment;
+    }
+
 }

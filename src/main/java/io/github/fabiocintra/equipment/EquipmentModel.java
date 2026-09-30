@@ -46,4 +46,10 @@ public class EquipmentModel {
         this.avaliableQuantity = totalQuantity;
     }
 
+    public void updateEquipmentAfterLoan() {
+        this.borrowedQuantity = this.borrowedQuantity + 1;
+        this.avaliableQuantity = this.avaliableQuantity - 1;
+        this.totalQuantity = this.totalQuantity - 1;
+    }
+
 }

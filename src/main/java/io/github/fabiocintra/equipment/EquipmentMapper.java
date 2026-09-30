@@ -2,6 +2,7 @@ package io.github.fabiocintra.equipment;
 
 import io.github.fabiocintra.equipment.dto.EquipmentRequest;
 import io.github.fabiocintra.equipment.dto.EquipmentResponse;
+import io.github.fabiocintra.equipment.dto.EquipmentToLoanResponse;
 import io.github.fabiocintra.equipment.dto.EquipmentUpdateRequest;
 import io.github.fabiocintra.utils.annotations.Mapper;
 
@@ -29,6 +30,13 @@ public class EquipmentMapper {
                 model.getTotalQuantity(),
                 model.getBorrowedQuantity(),
                 model.getAvaliableQuantity()
+        );
+    }
+
+    public EquipmentToLoanResponse toLoanResponse(EquipmentModel model){
+        return new EquipmentToLoanResponse(
+          model.getId(),
+          model.getName()
         );
     }
 
