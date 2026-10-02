@@ -49,6 +49,7 @@ public class LoanMapper {
     public LoanResponse toResponse(LoanModel model){
         return new LoanResponse(
           model.getId(),
+          model.getStatus(),
           model.getDateLoan(),
           model.getDateReturn(),
           userMapper.toResponse(model.getUser()),

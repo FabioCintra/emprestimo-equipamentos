@@ -36,6 +36,10 @@ public class LoanModel {
     @Column(name = "date_return")
     private LocalDateTime dateReturn;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
