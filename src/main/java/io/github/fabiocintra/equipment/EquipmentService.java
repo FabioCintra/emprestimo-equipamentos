@@ -1,5 +1,6 @@
 package io.github.fabiocintra.equipment;
 
+import io.github.fabiocintra.utils.exceptions.LoanException;
 import io.github.fabiocintra.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,8 +37,14 @@ public class EquipmentService {
             equipmentPersisted.setName(newName);
         }
         if(newTotalQuantity != null){
+            int borrowedQuantity = equipmentPersisted.getBorrowedQuantity();
+
+            if( newTotalQuantity < borrowedQuantity){
+                throw new LoanException("The new total amount cannot be less than the borrowed amount!");
+            }
+
             equipmentPersisted.setTotalQuantity(newTotalQuantity);
-            equipmentPersisted.setAvaliableQuantity(newTotalQuantity);
+            equipmentPersisted.setAvaliableQuantity(newTotalQuantity - borrowedQuantity);
         }
 
         repository.save(equipmentPersisted);
