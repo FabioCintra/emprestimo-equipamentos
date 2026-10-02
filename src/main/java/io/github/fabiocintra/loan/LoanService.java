@@ -5,7 +5,9 @@ import io.github.fabiocintra.equipment.EquipmentRepository;
 import io.github.fabiocintra.user.UserModel;
 import io.github.fabiocintra.utils.exceptions.LoanException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import static io.github.fabiocintra.loan.LoanSpecs.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,7 +49,7 @@ public class LoanService {
                 equipment
         );
 
-        if (activeLoans == 3){
+        if (activeLoans >= 3){
             throw new LoanException("The user's allowed loan limit has been reached");
         }
 
@@ -55,7 +57,7 @@ public class LoanService {
             throw new LoanException("The user's equipment has been reached");
         }
 
-        if (equipment.getAvaliableQuantity() == 0){
+        if (equipment.getAvaliableQuantity() <= 0){
             throw new LoanException("The equipment has no available quantity");
         }
 
@@ -88,6 +90,10 @@ public class LoanService {
         LoanModel loan = loanPersisted.get();
         EquipmentModel equipment = loan.getEquipment();
 
+        if (equipment.getBorrowedQuantity() <= 0){
+            throw new LoanException("The equipment has no borrowed quantity");
+        }
+
         /**
          * Atualizando o status do emprestimo
          */
@@ -100,9 +106,34 @@ public class LoanService {
          * Atualizando a disponibilidade do equipamento
          */
         equipment.updateEquipmentAfterReturnLoan();
-        System.out.println(equipment.getAvaliableQuantity());
-        System.out.println(equipment.getBorrowedQuantity());
         equipmentRepository.save(equipment);
+
+    }
+
+
+    /**
+     * Depois adicionar paginacoa
+     *
+     * Retorna todos os emprestimos.
+     *
+     * - Se o id vir preenchido, entao vai retornar somente os emprestimos de um determinado usuario
+     * - Se status vir preenchido filtra pelo status que esta preenchido
+     */
+    public List<LoanModel> getLoans(String id, Status status) {
+        Specification<LoanModel> specification = Specification.where(
+                (root, query, cb) -> cb.conjunction()
+        );
+
+        if(id != null) {
+            UUID userId = UUID.fromString(id);
+            specification = specification.and(userIdEquals(userId));
+        }
+
+        if(status != null) {
+            specification = specification.and(statusEquals(status));
+        }
+
+        return repository.findAll(specification);
 
     }
 

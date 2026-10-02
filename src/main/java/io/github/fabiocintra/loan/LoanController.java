@@ -1,12 +1,14 @@
 package io.github.fabiocintra.loan;
 
 import io.github.fabiocintra.loan.dto.LoanRequest;
+import io.github.fabiocintra.loan.dto.LoanResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +31,19 @@ public class LoanController {
     public void returnLoan(@PathVariable String id){
         UUID loanId = UUID.fromString(id);
         service.returnLoan(loanId);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<LoanResponse> getLoans(
+            @RequestParam(value = "userId", required = false)  String userId,
+            @RequestParam(value = "status", required = false)  Status status
+    ){
+        List<LoanModel> loans = service.getLoans(userId, status);
+        return loans
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
 }
