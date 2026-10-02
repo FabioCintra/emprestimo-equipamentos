@@ -3,9 +3,11 @@ package io.github.fabiocintra.user;
 import static io.github.fabiocintra.utils.Utils.*;
 
 import io.github.fabiocintra.user.dto.UserUpdateRequest;
+import static io.github.fabiocintra.user.UserSpecs.*;
 import io.github.fabiocintra.utils.exceptions.DataExistsInTheSystemException;
 import io.github.fabiocintra.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,9 +69,18 @@ public class UserService {
         return repository.save(userUpdated);
     }
 
-    public List<UserModel> findAll(){
+    public List<UserModel> findAll(String name){
+
+        Specification<UserModel> spec = Specification.where(
+                (root, criteriaQuery, cb) -> cb.conjunction()
+        );
+
+        if(name != null){
+            spec = spec.and(nameLike(name));
+        }
+
         return repository
-                .findAll()
+                .findAll(spec)
                 .stream()
                 .map(user -> {
                         String cpf = user.getCpf();

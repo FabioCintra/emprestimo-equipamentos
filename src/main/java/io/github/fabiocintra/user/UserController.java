@@ -36,11 +36,11 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserResponse> findAllUser(){
+    public List<UserResponse> findAllUser(@RequestParam(value = "name", required = false)  String name){
         return service
-                .findAll()
+                .findAll(name)
                 .stream()
-                .map(user -> mapper.toResponse(user))
+                .map(mapper::toResponse)
                 .toList();
     }
 
