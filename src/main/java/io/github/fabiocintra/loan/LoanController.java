@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/loans")
 @RequiredArgsConstructor
@@ -20,6 +22,13 @@ public class LoanController {
     public void createLoan(@RequestBody @Valid LoanRequest request){
         LoanModel loan = mapper.toModel(request);
         service.createLoan(loan);
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void returnLoan(@PathVariable String id){
+        UUID loanId = UUID.fromString(id);
+        service.returnLoan(loanId);
     }
 
 }

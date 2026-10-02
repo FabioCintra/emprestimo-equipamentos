@@ -8,6 +8,7 @@ import io.github.fabiocintra.loan.dto.LoanResponse;
 import io.github.fabiocintra.user.UserMapper;
 import io.github.fabiocintra.user.UserModel;
 import io.github.fabiocintra.user.UserRepository;
+import io.github.fabiocintra.user.dto.UserLoanResponse;
 import io.github.fabiocintra.utils.annotations.Mapper;
 import io.github.fabiocintra.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ public class LoanMapper {
     private final EquipmentRepository equipmentRepository;
     private final UserRepository userRepository;
     private final EquipmentMapper equipmentMapper;
-    private final UserMapper userMapper;
 
     public LoanModel toModel(LoanRequest request){
 
@@ -47,12 +47,20 @@ public class LoanMapper {
     }
 
     public LoanResponse toResponse(LoanModel model){
+
+        UserModel user = model.getUser();
+
         return new LoanResponse(
           model.getId(),
           model.getStatus(),
           model.getDateLoan(),
           model.getDateReturn(),
-          userMapper.toResponse(model.getUser()),
+          new UserLoanResponse(
+                  user.getId(),
+                  user.getUsername(),
+                  user.getName(),
+                  user.getCpf()
+          ),
           equipmentMapper.toLoanResponse(model.getEquipment())
         );
     }

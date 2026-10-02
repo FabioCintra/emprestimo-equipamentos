@@ -1,5 +1,6 @@
 package io.github.fabiocintra.user;
 
+import io.github.fabiocintra.loan.LoanMapper;
 import io.github.fabiocintra.user.dto.UserRequest;
 import io.github.fabiocintra.user.dto.UserResponse;
 import io.github.fabiocintra.utils.annotations.Mapper;
@@ -11,6 +12,7 @@ import org.apache.catalina.User;
 public class UserMapper {
 
     private final UserService service;
+    private final LoanMapper loanMapper;
 
     public UserModel toEntity(UserRequest request) {
         return new UserModel(

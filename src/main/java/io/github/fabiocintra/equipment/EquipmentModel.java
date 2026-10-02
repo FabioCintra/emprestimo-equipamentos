@@ -47,13 +47,21 @@ public class EquipmentModel {
     }
 
     public void updateEquipmentAfterLoan() {
-        this.borrowedQuantity = this.borrowedQuantity + 1;
-        this.avaliableQuantity = this.avaliableQuantity - 1;
+        if (avaliableQuantity <= 0) {
+            throw new IllegalStateException("No equipment available.");
+        }
+
+        borrowedQuantity++;
+        avaliableQuantity--;
     }
 
     public void updateEquipmentAfterReturnLoan() {
-        this.borrowedQuantity = this.borrowedQuantity - 1;
-        this.avaliableQuantity = this.avaliableQuantity + 1;
+        if (borrowedQuantity <= 0) {
+            throw new IllegalStateException("No borrowed equipment to return.");
+        }
+
+        borrowedQuantity--;
+        avaliableQuantity++;
     }
 
 

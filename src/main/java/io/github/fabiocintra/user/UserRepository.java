@@ -13,7 +13,9 @@ public interface UserRepository extends JpaRepository<UserModel, UUID> {
     boolean existsByCpf(String cpf);
 
     @Query ("""
-            SELECT DISTINCT u from UserModel as u LEFT JOIN FETCH u.loans WHERE u.id = :id
+            SELECT DISTINCT u from UserModel as u 
+            LEFT JOIN FETCH u.loans 
+            WHERE u.id = :id
         """)
     Optional<UserModel> findByIdWithLoans(@Param("id") UUID id);
 

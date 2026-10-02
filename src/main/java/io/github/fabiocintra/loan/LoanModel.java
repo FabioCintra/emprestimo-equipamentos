@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
@@ -37,6 +39,7 @@ public class LoanModel {
     private LocalDateTime dateReturn;
 
     @Column(name = "status")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
     private Status status;
 
